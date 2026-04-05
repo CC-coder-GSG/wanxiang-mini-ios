@@ -1,0 +1,27 @@
+# Xcode
+build/
+*.xcworkspace
+xcuserdata/
+*.xcuserstate
+*.xcscheme
+DerivedData/
+*.moved-aside
+*.pbxuser
+*.mode1v3
+*.mode2v3
+*.perspectivev3
+
+# Swift Package Manager
+.build/
+.swiftpm/
+
+# Generated
+*.xcodeproj/project.xcworkspace
+*.xcodeproj/xcuserdata
+
+# macOS
+.DS_Store
+
+# Icon generation scripts (root level only)
+/icon_*.png
+/generate_icon.swift
