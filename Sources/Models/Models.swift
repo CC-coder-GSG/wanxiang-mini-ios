@@ -262,6 +262,119 @@ struct DeviceDetail: Decodable {
     let createTime: Int64
     let expireTime: Int64
     let creatorName: String?
+
+    enum CodingKeys: String, CodingKey {
+        case id, sn, deviceType, accountType, isSpan, isFarm
+        case salesName, remark, remainingTime, duration, status
+        case online, createTime, expireTime, creatorName
+    }
+
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        id = try container.decodeLossyInt(forKey: .id)
+        sn = try container.decodeLossyString(forKey: .sn)
+        deviceType = try container.decodeLossyString(forKey: .deviceType, defaultValue: "—")
+        accountType = try container.decodeLossyString(forKey: .accountType, defaultValue: "9")
+        isSpan = try container.decodeLossyBool(forKey: .isSpan, defaultValue: false)
+        isFarm = try container.decodeLossyBool(forKey: .isFarm, defaultValue: false)
+        salesName = try container.decodeIfPresent(String.self, forKey: .salesName)
+        remark = try container.decodeIfPresent(String.self, forKey: .remark)
+        remainingTime = try container.decodeLossyInt(forKey: .remainingTime, defaultValue: 0)
+        duration = try container.decodeLossyInt(forKey: .duration, defaultValue: 0)
+        status = try container.decodeLossyInt(forKey: .status, defaultValue: 0)
+        online = try container.decodeLossyBool(forKey: .online, defaultValue: false)
+        createTime = try container.decodeLossyInt64(forKey: .createTime, defaultValue: 0)
+        expireTime = try container.decodeLossyInt64(forKey: .expireTime, defaultValue: 0)
+        creatorName = try container.decodeIfPresent(String.self, forKey: .creatorName)
+    }
+}
+
+private extension KeyedDecodingContainer {
+    func decodeLossyString(forKey key: Key, defaultValue: String? = nil) throws -> String {
+        if let value = try decodeIfPresent(String.self, forKey: key) {
+            return value
+        }
+        if let value = try decodeIfPresent(Int.self, forKey: key) {
+            return String(value)
+        }
+        if let value = try decodeIfPresent(Int64.self, forKey: key) {
+            return String(value)
+        }
+        if let value = try decodeIfPresent(Double.self, forKey: key) {
+            return String(value)
+        }
+        if let value = try decodeIfPresent(Bool.self, forKey: key) {
+            return value ? "true" : "false"
+        }
+        if let defaultValue {
+            return defaultValue
+        }
+        throw DecodingError.keyNotFound(key, .init(codingPath: codingPath, debugDescription: "Missing string-like value"))
+    }
+
+    func decodeLossyBool(forKey key: Key, defaultValue: Bool? = nil) throws -> Bool {
+        if let value = try decodeIfPresent(Bool.self, forKey: key) {
+            return value
+        }
+        if let value = try decodeIfPresent(Int.self, forKey: key) {
+            return value != 0
+        }
+        if let value = try decodeIfPresent(String.self, forKey: key) {
+            switch value.trimmingCharacters(in: .whitespacesAndNewlines).lowercased() {
+            case "true", "1", "yes", "y":
+                return true
+            case "false", "0", "no", "n":
+                return false
+            default:
+                break
+            }
+        }
+        if let defaultValue {
+            return defaultValue
+        }
+        throw DecodingError.keyNotFound(key, .init(codingPath: codingPath, debugDescription: "Missing bool-like value"))
+    }
+
+    func decodeLossyInt(forKey key: Key, defaultValue: Int? = nil) throws -> Int {
+        if let value = try decodeIfPresent(Int.self, forKey: key) {
+            return value
+        }
+        if let value = try decodeIfPresent(Int64.self, forKey: key) {
+            return Int(value)
+        }
+        if let value = try decodeIfPresent(Double.self, forKey: key) {
+            return Int(value)
+        }
+        if let value = try decodeIfPresent(String.self, forKey: key), let intValue = Int(value) {
+            return intValue
+        }
+        if let value = try decodeIfPresent(Bool.self, forKey: key) {
+            return value ? 1 : 0
+        }
+        if let defaultValue {
+            return defaultValue
+        }
+        throw DecodingError.keyNotFound(key, .init(codingPath: codingPath, debugDescription: "Missing int-like value"))
+    }
+
+    func decodeLossyInt64(forKey key: Key, defaultValue: Int64? = nil) throws -> Int64 {
+        if let value = try decodeIfPresent(Int64.self, forKey: key) {
+            return value
+        }
+        if let value = try decodeIfPresent(Int.self, forKey: key) {
+            return Int64(value)
+        }
+        if let value = try decodeIfPresent(Double.self, forKey: key) {
+            return Int64(value)
+        }
+        if let value = try decodeIfPresent(String.self, forKey: key), let intValue = Int64(value) {
+            return intValue
+        }
+        if let defaultValue {
+            return defaultValue
+        }
+        throw DecodingError.keyNotFound(key, .init(codingPath: codingPath, debugDescription: "Missing int64-like value"))
+    }
 }
 
 // MARK: - Diagnostic Tools

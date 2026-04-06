@@ -10,7 +10,7 @@ struct HomeView: View {
         ("差分账户管理", "person.2.fill", AnyView(CorsAccountView())),
         ("万象地信", "map.fill", AnyView(CrossRegionView())),
         ("注册日志", "clock.arrow.circlepath", AnyView(RegisterLogView())),
-        ("万向官网", "globe", AnyView(InWebView(url: URL(string: "https://www.sinognss.com")!))),
+        ("司南官网", "globe", AnyView(InWebView(url: URL(string: "https://www.sinognss.com")!))),
     ]
 
     var body: some View {
