@@ -260,16 +260,25 @@ final class APIClient {
         return resp.data
     }
 
-    func saveEquipment(sn: String, companyId: String?, managerId: String?, remark: String, duration: String, token: String) async throws -> SimpleResponse {
+    func saveEquipment(sn: String, companyId: String?, managerId: String?, remark: String, duration: String, active: Bool, token: String) async throws -> SimpleResponse {
         var fields: [String: String] = [
             "sn": sn,
             "remark": remark,
-            "active": "true",
+            "active": active ? "true" : "false",
             "duration": duration
         ]
         if let cid = companyId { fields["declarCompanyId"] = cid }
         if let mid = managerId { fields["decalrId"] = mid }
         return try await postForm("gateway/DiffPlat/device/save", fields: fields, token: token)
+    }
+
+    func renewDeviceByDuration(sn: String, duration: Int, token: String) async throws -> SimpleResponse {
+        var comps = URLComponents(url: baseURL.appendingPathComponent("gateway/DiffPlat/device/expireTime/updateByDur"), resolvingAgainstBaseURL: false)!
+        comps.queryItems = [.init(name: "sn", value: sn), .init(name: "duration", value: "\(duration)")]
+        var req = URLRequest(url: comps.url!)
+        req.httpMethod = "POST"
+        req.setValue("bearer \(token)", forHTTPHeaderField: "Authorization")
+        return try await perform(req)
     }
 
     func deleteEquipment(sn: String, token: String) async throws -> SimpleResponse {

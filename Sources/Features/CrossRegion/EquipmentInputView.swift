@@ -6,7 +6,8 @@ struct EquipmentInputView: View {
 
     @State private var sn = ""
     @State private var remark = ""
-    @State private var duration = "365"
+    @State private var duration = "1"
+    @State private var active = false
     @State private var dealerKeyword = ""
     @State private var dealers: [DealerItem] = []
     @State private var selectedDealer: DealerItem? = nil
@@ -26,11 +27,12 @@ struct EquipmentInputView: View {
                             .autocorrectionDisabled()
                             .textInputAutocapitalization(.characters)
                     }
-                    LabeledContent("有效期（天）") {
-                        TextField("天数", text: $duration)
+                    LabeledContent("配套时长（年）") {
+                        TextField("年数", text: $duration)
                             .multilineTextAlignment(.trailing)
                             .keyboardType(.numberPad)
                     }
+                    Toggle("是否立即激活", isOn: $active)
                     TextField("备注（选填）", text: $remark)
                 }
 
@@ -124,7 +126,7 @@ struct EquipmentInputView: View {
     private func submit() {
         let snVal = sn.trimmingCharacters(in: .whitespaces)
         guard !snVal.isEmpty else { errorMsg = "请输入 SN 号"; return }
-        guard !duration.isEmpty, Int(duration) != nil else { errorMsg = "请输入有效的天数"; return }
+        guard !duration.isEmpty, let durationInt = Int(duration), durationInt >= 1, durationInt <= 10 else { errorMsg = "请输入有效的年数（1-10）"; return }
         guard let token = try? env.requireToken() else { env.handle(APIError.notLoggedIn); return }
 
         isSubmitting = true
@@ -138,6 +140,7 @@ struct EquipmentInputView: View {
                     managerId: selectedDealer.map { "\($0.managerId)" },
                     remark: remark,
                     duration: duration,
+                    active: active,
                     token: token
                 )
                 successMsg = resp.message.isEmpty ? "录入成功" : resp.message

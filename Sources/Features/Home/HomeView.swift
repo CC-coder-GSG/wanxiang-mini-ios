@@ -8,7 +8,7 @@ struct HomeView: View {
         ("设备注册", "checkmark.seal.fill", AnyView(RegisterView())),
         ("软件注册码", "key.fill", AnyView(SoftwareListView())),
         ("差分账户管理", "person.2.fill", AnyView(CorsAccountView())),
-        ("跨区设备管理", "map.fill", AnyView(CrossRegionView())),
+        ("万象地信", "map.fill", AnyView(CrossRegionView())),
         ("注册日志", "clock.arrow.circlepath", AnyView(RegisterLogView())),
         ("万向官网", "globe", AnyView(InWebView(url: URL(string: "https://www.sinognss.com")!))),
     ]

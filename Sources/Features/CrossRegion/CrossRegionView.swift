@@ -49,7 +49,7 @@ struct CrossRegionView: View {
                     }
                 }
             }
-            .navigationTitle("跨区设备管理")
+            .navigationTitle("万象地信")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
@@ -99,13 +99,18 @@ struct DeviceItemRow: View {
             if let dt = device.deviceType {
                 Text(dt).font(.caption).foregroundStyle(.secondary)
             }
+            if let s = device.salesName {
+                Label(s, systemImage: "storefront").font(.caption).foregroundStyle(.secondary)
+            }
             HStack {
-                if let s = device.salesName {
-                    Label(s, systemImage: "storefront").font(.caption)
+                if let exp = device.expireTime {
+                    Label(String.fromMillis(exp), systemImage: "calendar")
+                        .font(.caption)
+                        .foregroundStyle(exp < Int64(Date().timeIntervalSince1970 * 1000) ? .red : .secondary)
                 }
                 Spacer()
-                if let rt = device.remainingTime {
-                    Text("剩余 \(rt) 天").font(.caption).foregroundStyle(.secondary)
+                if let d = device.duration, d > 0 {
+                    Text("配套剩余 \(d) 年").font(.caption2).foregroundStyle(.orange)
                 }
             }
         }
