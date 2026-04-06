@@ -103,19 +103,21 @@ struct CrossRegionEditView: View {
                                     }
                                 }
 
-                                // 剩余服务天数
+                                // 剩余天数（web端对应字段：remainingTime）
                                 HStack {
-                                    Text("剩余服务").font(.caption).foregroundStyle(.secondary)
+                                    Text("剩余(天)").font(.caption).foregroundStyle(.secondary)
                                     Spacer()
-                                    Text("\(d.remainingTime) 天").font(.caption)
+                                    Text(d.remainingTime > 0 ? "\(d.remainingTime)" : "—")
+                                        .font(.caption)
+                                        .foregroundStyle(d.remainingTime > 0 ? .primary : .secondary)
                                 }
                             }
 
-                            // 配套剩余
+                            // 配套剩余（web端对应字段：duration，单位：年）
                             HStack {
-                                Text("配套剩余").font(.caption).foregroundStyle(.secondary)
+                                Text("配套剩余(年)").font(.caption).foregroundStyle(.secondary)
                                 Spacer()
-                                Text(d.duration > 0 ? "\(d.duration) 年" : "—")
+                                Text(d.duration > 0 ? "\(d.duration)" : "—")
                                     .font(.caption)
                                     .foregroundStyle(d.duration > 0 ? .primary : .secondary)
                             }

@@ -15,6 +15,7 @@ struct EquipmentInputView: View {
     @State private var isSubmitting = false
     @State private var errorMsg: String? = nil
     @State private var successMsg: String? = nil
+    @FocusState private var durationFocused: Bool
 
     var body: some View {
         ZStack {
@@ -31,6 +32,13 @@ struct EquipmentInputView: View {
                         TextField("年数", text: $duration)
                             .multilineTextAlignment(.trailing)
                             .keyboardType(.numberPad)
+                            .focused($durationFocused)
+                            .toolbar {
+                                ToolbarItemGroup(placement: .keyboard) {
+                                    Spacer()
+                                    Button("完成") { durationFocused = false }
+                                }
+                            }
                     }
                     Toggle("是否立即激活", isOn: $active)
                     TextField("备注（选填）", text: $remark)
