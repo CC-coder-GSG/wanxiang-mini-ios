@@ -71,22 +71,43 @@ struct CrossRegionEditView: View {
                             InfoRow(label: "备注", value: d.remark ?? "—")
                             InfoRow(label: "在线状态", value: d.online ? "在线" : "离线")
 
+                            // 服务状态
+                            let (statusLabel, statusColor) = statusInfo(for: d.status)
+                            HStack {
+                                Text("服务状态").font(.caption).foregroundStyle(.secondary)
+                                Spacer()
+                                Text(statusLabel)
+                                    .font(.caption2)
+                                    .padding(.horizontal, 6).padding(.vertical, 2)
+                                    .background(statusColor.opacity(0.12), in: Capsule())
+                                    .foregroundStyle(statusColor)
+                            }
+
                             Divider()
 
-                            // 过期时间（超期显示红色）
-                            let nowMs = Int64(Date().timeIntervalSince1970 * 1000)
-                            let isExpired = d.expireTime < nowMs
-                            HStack {
-                                Text("过期时间").font(.caption).foregroundStyle(.secondary)
-                                Spacer()
-                                Text(String.fromMillis(d.expireTime))
-                                    .font(.caption)
-                                    .foregroundStyle(isExpired ? .red : .primary)
-                                if isExpired {
-                                    Text("已过期").font(.caption2)
-                                        .padding(.horizontal, 6).padding(.vertical, 2)
-                                        .background(Color.red.opacity(0.12), in: Capsule())
-                                        .foregroundStyle(.red)
+                            // 过期时间：未激活设备没有有效的过期时间
+                            if d.status != 1 && d.expireTime > 0 {
+                                let nowMs = Int64(Date().timeIntervalSince1970 * 1000)
+                                let isExpired = d.expireTime < nowMs
+                                HStack {
+                                    Text("过期时间").font(.caption).foregroundStyle(.secondary)
+                                    Spacer()
+                                    Text(String.fromMillis(d.expireTime))
+                                        .font(.caption)
+                                        .foregroundStyle(isExpired ? .red : .primary)
+                                    if isExpired {
+                                        Text("已过期").font(.caption2)
+                                            .padding(.horizontal, 6).padding(.vertical, 2)
+                                            .background(Color.red.opacity(0.12), in: Capsule())
+                                            .foregroundStyle(.red)
+                                    }
+                                }
+
+                                // 剩余服务天数
+                                HStack {
+                                    Text("剩余服务").font(.caption).foregroundStyle(.secondary)
+                                    Spacer()
+                                    Text("\(d.remainingTime) 天").font(.caption)
                                 }
                             }
 
@@ -94,15 +115,9 @@ struct CrossRegionEditView: View {
                             HStack {
                                 Text("配套剩余").font(.caption).foregroundStyle(.secondary)
                                 Spacer()
-                                Text("\(d.duration) 年")
+                                Text(d.duration > 0 ? "\(d.duration) 年" : "—")
                                     .font(.caption)
                                     .foregroundStyle(d.duration > 0 ? .primary : .secondary)
-                            }
-
-                            HStack {
-                                Text("剩余服务").font(.caption).foregroundStyle(.secondary)
-                                Spacer()
-                                Text("\(d.remainingTime) 天").font(.caption)
                             }
                         }
                         .padding(14)
@@ -251,6 +266,17 @@ struct CrossRegionEditView: View {
                 successMsg = resp.message.isEmpty ? "更新成功" : resp.message
             } catch { errorMsg = env.handle(error) }
             isLoading = false
+        }
+    }
+
+    private func statusInfo(for status: Int) -> (String, Color) {
+        switch status {
+        case 0:  return ("服务中",   .green)
+        case 1:  return ("未激活",   .secondary)
+        case 3:  return ("已到期",   .red)
+        case 9:  return ("已禁用",   Color(.darkGray))
+        case 21: return ("即将到期", .orange)
+        default: return ("未知",     .secondary)
         }
     }
 

@@ -87,11 +87,23 @@ struct CrossRegionView: View {
 struct DeviceItemRow: View {
     let device: DeviceItem
 
+    private var statusInfo: (label: String, color: Color) {
+        switch device.status {
+        case 0:  return ("服务中",    .green)
+        case 1:  return ("未激活",    .secondary)
+        case 3:  return ("已到期",    .red)
+        case 9:  return ("已禁用",    Color(.darkGray))
+        case 21: return ("即将到期",  .orange)
+        default: return ("未知",      .secondary)
+        }
+    }
+
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
             HStack {
                 Text(device.sn).font(.subheadline.bold())
                 Spacer()
+                // 在线状态圆点
                 Circle()
                     .fill((device.online == true) ? Color.green : Color.secondary.opacity(0.4))
                     .frame(width: 8, height: 8)
@@ -102,16 +114,28 @@ struct DeviceItemRow: View {
             if let s = device.salesName {
                 Label(s, systemImage: "storefront").font(.caption).foregroundStyle(.secondary)
             }
-            HStack {
-                if let exp = device.expireTime {
-                    Label(String.fromMillis(exp), systemImage: "calendar")
-                        .font(.caption)
-                        .foregroundStyle(exp < Int64(Date().timeIntervalSince1970 * 1000) ? .red : .secondary)
+
+            // 服务状态 + 配套剩余
+            HStack(spacing: 6) {
+                if device.status != nil {
+                    Text(statusInfo.label)
+                        .font(.caption2)
+                        .padding(.horizontal, 6).padding(.vertical, 2)
+                        .background(statusInfo.color.opacity(0.12), in: Capsule())
+                        .foregroundStyle(statusInfo.color)
                 }
                 Spacer()
                 if let d = device.duration, d > 0 {
                     Text("配套剩余 \(d) 年").font(.caption2).foregroundStyle(.orange)
                 }
+            }
+
+            // 过期时间：仅 status != 1（已激活设备）才有意义
+            if device.status != 1, let exp = device.expireTime, exp > 0 {
+                let nowMs = Int64(Date().timeIntervalSince1970 * 1000)
+                Label(String.fromMillis(exp), systemImage: "calendar")
+                    .font(.caption)
+                    .foregroundStyle(exp < nowMs ? .red : .secondary)
             }
         }
         .padding(.vertical, 4)
