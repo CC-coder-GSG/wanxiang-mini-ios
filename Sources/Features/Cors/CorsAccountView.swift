@@ -102,7 +102,7 @@ struct CorsAccountRow: View {
                 Text(account.name)
                     .font(.subheadline.bold())
                 Spacer()
-                StatusBadge(status: account.accountStatus)
+                ActiveStatusBadge(status: account.activeStatus)
             }
             HStack(spacing: 16) {
                 Label("类型 \(account.accountType)", systemImage: "tag")
@@ -117,6 +117,39 @@ struct CorsAccountRow: View {
     }
 }
 
+/// 激活状态：0=服务中 1=未激活 2=已到期
+struct ActiveStatusBadge: View {
+    let status: Int
+
+    var body: some View {
+        Text(label)
+            .font(.caption2)
+            .padding(.horizontal, 8)
+            .padding(.vertical, 3)
+            .background(color.opacity(0.15), in: Capsule())
+            .foregroundStyle(color)
+    }
+
+    private var label: String {
+        switch status {
+        case 0: return "服务中"
+        case 1: return "未激活"
+        case 2: return "已到期"
+        default: return "未知"
+        }
+    }
+
+    private var color: Color {
+        switch status {
+        case 0: return .green
+        case 1: return .orange
+        case 2: return .red
+        default: return .secondary
+        }
+    }
+}
+
+/// 账号状态：0=正常 1=过期 2=禁用（保留供详情页使用）
 struct StatusBadge: View {
     let status: Int
 
@@ -159,16 +192,37 @@ struct CorsAccountDetailSheet: View {
     @State private var isLoading = false
     @State private var errorMsg: String? = nil
     @State private var successMsg: String? = nil
+    @State private var showDiagnostic = false
 
     var body: some View {
         NavigationStack {
             ZStack {
                 Color.appBackground.ignoresSafeArea()
                 List {
+                    Section {
+                        Button {
+                            showDiagnostic = true
+                        } label: {
+                            Label("诊断工具", systemImage: "stethoscope")
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                        }
+                        .buttonStyle(.borderless)
+                    }
+                    .listRowBackground(Color.appCard)
+
                     Section("账户信息") {
                         InfoRow(label: "账户名", value: account.name)
                         InfoRow(label: "ID", value: "\(account.id)")
-                        InfoRow(label: "状态", value: statusLabel(account.accountStatus))
+                        HStack {
+                            Text("激活状态").foregroundStyle(.secondary)
+                            Spacer()
+                            ActiveStatusBadge(status: account.activeStatus)
+                        }
+                        HStack {
+                            Text("账号状态").foregroundStyle(.secondary)
+                            Spacer()
+                            StatusBadge(status: account.accountStatus)
+                        }
                         InfoRow(label: "类型", value: "\(account.accountType)")
                         InfoRow(label: "激活时间", value: account.activeTime.map { String.fromMillis($0) } ?? "—")
                         InfoRow(label: "过期时间", value: account.expiredate.map { String.fromMillis($0) } ?? "—")
@@ -239,6 +293,10 @@ struct CorsAccountDetailSheet: View {
                 }
 
                 if isLoading { LoadingOverlay(message: "处理中...") }
+            }
+            .sheet(isPresented: $showDiagnostic) {
+                DiagnosticView(account: account)
+                    .environment(env)
             }
         }
     }

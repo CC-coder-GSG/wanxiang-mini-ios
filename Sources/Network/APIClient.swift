@@ -281,6 +281,29 @@ final class APIClient {
         return try await perform(req)
     }
 
+    // MARK: - Diagnostic Tools
+
+    func fetchDiagnostic(id: Int, name: String, token: String) async throws -> DiagnosticData {
+        let body: [String: Any] = ["id": id, "name": name]
+        let resp: DiagnosticResponse = try await postJSON("gateway/BaseUser/userInfo/userDiago", body: body, token: token)
+        guard resp.code == 0 else { throw APIError.serverError(resp.message) }
+        return resp.data ?? DiagnosticData(basic: nil, latest: nil)
+    }
+
+    func fetchUsageDetail(id: Int, name: String, st: Int64, et: Int64, token: String) async throws -> UsageDetailData {
+        let body: [String: Any] = ["id": id, "name": name, "st": st, "et": et]
+        let resp: UsageDetailResponse = try await postJSON("gateway/BaseUser/userInfo/usageDetail", body: body, token: token)
+        guard resp.code == 0 else { throw APIError.serverError(resp.message) }
+        return resp.data ?? UsageDetailData(useInfo: nil, statusList: nil, stateList: nil)
+    }
+
+    func fetchWarnPage(id: Int, name: String, st: Int64, et: Int64, page: Int, size: Int, token: String) async throws -> WarnPageData {
+        let body: [String: Any] = ["id": id, "name": name, "st": st, "et": et, "current": page, "size": size]
+        let resp: WarnPageResponse = try await postJSON("gateway/BaseUser/userInfo/warnPage", body: body, token: token)
+        guard resp.code == 0 else { throw APIError.serverError(resp.message) }
+        return resp.data ?? WarnPageData(records: nil, total: nil, pages: nil)
+    }
+
     // MARK: - Private Helpers
 
     private func postJSON<T: Decodable>(_ path: String, body: [String: Any], token: String, extraHeaders: [String: String] = [:]) async throws -> T {

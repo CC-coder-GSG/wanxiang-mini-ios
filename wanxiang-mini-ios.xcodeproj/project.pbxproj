@@ -13,6 +13,7 @@
 		3136C582536C8FA95C7F34C6 /* CrossRegionEditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 722C4B334B7B6E9562D84D77 /* CrossRegionEditView.swift */; };
 		4385F544498E20EBD1B21996 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 619EA9748873CA9E364CEC93 /* LoginView.swift */; };
 		51506AB2F2465C2521190A49 /* EquipmentInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7E87C9F9DEF19AFCA43605F /* EquipmentInputView.swift */; };
+		57FA3F71E9DE1D90A9E552D2 /* DiagnosticView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84017CBBE066CE4346BE0A7B /* DiagnosticView.swift */; };
 		5CE0E24185165D6B1E0B3286 /* APIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1FDFF55FA30538D8F9D1711 /* APIClient.swift */; };
 		5D9034BE65CB2BDD2E190397 /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05056FA831FBCF320952855C /* Models.swift */; };
 		5DB5D39C41A21C5A821D7D97 /* AppEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED0970F81FBB750B897D3F1D /* AppEnvironment.swift */; };
@@ -39,6 +40,7 @@
 		54CFF4059748D948181BC05C /* InWebView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InWebView.swift; sourceTree = "<group>"; };
 		619EA9748873CA9E364CEC93 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		722C4B334B7B6E9562D84D77 /* CrossRegionEditView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrossRegionEditView.swift; sourceTree = "<group>"; };
+		84017CBBE066CE4346BE0A7B /* DiagnosticView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiagnosticView.swift; sourceTree = "<group>"; };
 		9E5AE094960EC3B2D0DA01EA /* wanxiang-mini-ios.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "wanxiang-mini-ios.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		A4D9BB27A98DB57810B0DBFD /* WanxiangApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WanxiangApp.swift; sourceTree = "<group>"; };
 		B553B8110DD1AF7DB3BFFF49 /* NewSoftwareView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewSoftwareView.swift; sourceTree = "<group>"; };
@@ -113,6 +115,7 @@
 			isa = PBXGroup;
 			children = (
 				02A87DE38A28512641BACAAE /* CorsAccountView.swift */,
+				84017CBBE066CE4346BE0A7B /* DiagnosticView.swift */,
 			);
 			path = Cors;
 			sourceTree = "<group>";
@@ -272,6 +275,7 @@
 				3136C582536C8FA95C7F34C6 /* CrossRegionEditView.swift in Sources */,
 				01E84FC54F0C9C7B2F4E5C91 /* CrossRegionView.swift in Sources */,
 				BB808598164E33391DAFA975 /* DesignSystem.swift in Sources */,
+				57FA3F71E9DE1D90A9E552D2 /* DiagnosticView.swift in Sources */,
 				51506AB2F2465C2521190A49 /* EquipmentInputView.swift in Sources */,
 				16A9A848771B5D765F3AFA5C /* HomeView.swift in Sources */,
 				C9F65D2D4AFE4F5E067AA80B /* InWebView.swift in Sources */,

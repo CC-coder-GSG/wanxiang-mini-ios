@@ -264,6 +264,97 @@ struct DeviceDetail: Decodable {
     let creatorName: String?
 }
 
+// MARK: - Diagnostic Tools
+
+struct DiagnosticResponse: Decodable {
+    let code: Int
+    let data: DiagnosticData?
+    let message: String
+}
+
+struct DiagnosticData: Decodable {
+    let basic: DiagBasic?
+    let latest: DiagLatest?
+}
+
+struct DiagBasic: Decodable {
+    let name: String?
+    let status: Int?       // 0=正常 1=未激活 2=已过期
+    let expiredate: Int64?
+}
+
+struct DiagLatest: Decodable {
+    let online: Bool?
+    let lastloadtime: Int64?
+    let lastunloadtime: Int64?
+    let type: Int?          // 0=Ntrip 1=Tcp
+    let mountPoint: String?
+    let ggaTime: Int64?
+    let boradCastTime: Int64?
+    let state: Int?         // 定位状态: 0=未定位 1=单点 2=伪距差分 3=PPS 4=固定解 5=浮点解 6=惯性导航
+}
+
+struct UsageDetailResponse: Decodable {
+    let code: Int
+    let data: UsageDetailData?
+    let message: String
+}
+
+struct UsageDetailData: Decodable {
+    let useInfo: UseInfo?
+    let statusList: [StatusSegment]?
+    let stateList: [StatePoint]?
+}
+
+struct UseInfo: Decodable {
+    let onlineTime: Double?
+    let avgDelay: Double?
+    let avgSatNum: Double?
+    let ggaCount: Int?
+    let invalidGga: Int?
+    let fixed: String?    // 服务端返回百分比字符串，如 "90.9%"
+    let floated: String?  // 服务端返回百分比字符串，如 "9.1%"
+    let logIn: Int?
+    let logOut: Int?
+}
+
+struct StatusSegment: Decodable, Identifiable {
+    var id: UUID { UUID() }
+    let online: Bool?
+    let timeLength: Double?
+    let startTime: Int64?
+    let endTime: Int64?
+}
+
+struct StatePoint: Decodable {
+    let createTime: Int64?
+    let state: Int?
+    let satNum: Int?
+    let delay: Double?
+}
+
+struct WarnPageResponse: Decodable {
+    let code: Int
+    let data: WarnPageData?
+    let message: String
+}
+
+struct WarnPageData: Decodable {
+    let records: [WarnRecord]?
+    let total: Int?
+    let pages: Int?
+}
+
+struct WarnRecord: Decodable, Identifiable {
+    var id: UUID { UUID() }
+    let createTime: Int64?
+    let event: String?      // 服务端返回中文事件名，如 "用户上线"、"用户下线"
+    let ip: String?
+    let port: Int?
+    let mountPoint: String?
+    let content: String?
+}
+
 struct DealerSearchResponse: Decodable {
     let code: Int
     let data: [DealerItem]
